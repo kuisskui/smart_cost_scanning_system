@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from src.services.processer_excel import processor
+from src.services.processor_excel import processor
 from tkinter import filedialog, messagebox
 import threading
 
@@ -44,10 +44,10 @@ class OutputFrame(ctk.CTkFrame):
         self.process_btn.configure(state="disabled")
 
         try:
-            thread = threading.Thread(target=processor.process)
+            thread = threading.Thread(target=processor.run_main_process)
             thread.daemon = True
             thread.start()
-            self.update_id = self.after(100, self.update_progress)
+            self.update_id = self.after(1000, self.update_progress)
             
         except Exception as e:
             messagebox.showerror("Error", f"Error processing files: {str(e)}")
@@ -67,11 +67,10 @@ class OutputFrame(ctk.CTkFrame):
     def update_progress(self):
         progress = processor.get_progress()
         if progress >= 100:
-            self.loading_label.configure(text="100.0 %")
+            self.loading_label.configure(text="100.0 %", text_color="green")
             self.process_btn.configure(state="normal")
             processor.current_row = 0
             self.after_cancel(self.update_id)
         else:
             self.loading_label.configure(text=f"{progress:.1f} %")
             self.update_id = self.after(100, self.update_progress)
-

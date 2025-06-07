@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from src.services.processer_excel import processor
+from src.services.processor_excel import processor
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -27,17 +27,11 @@ class TextInputFrame(ctk.CTkFrame):
         self.text_input.configure(text_color="green")
 
 def be_date_to_datetime(be_date: str) -> datetime:
-    """
-    Convert 'DD/MM/YYYY' Buddhist-Era date to a Python datetime
-    (Gregorian calendar).
 
-    Example
-    -------
-    >>> be_date_to_datetime("24/8/2566")
-    datetime.datetime(2023, 8, 24, 0, 0)
-    """
     if be_date == "":
         return datetime.today() + relativedelta(years=543)
+    
     day, month, year_be = map(int, be_date.split("/"))
     year_ce = year_be
+
     return datetime(year_ce, month, day)
