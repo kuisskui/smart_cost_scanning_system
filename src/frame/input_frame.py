@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import filedialog
-from src.services.processer_excel import processor
+from src.services.processor_excel import processor
+
 
 class InputFrame(ctk.CTkFrame):
     def __init__(self, parent, title, row):
@@ -45,4 +46,4 @@ class InputFrame(ctk.CTkFrame):
             file_name = file_path.split("/")[-1]
             self.file_label.configure(text=file_name)
             
-            processor.history_file_path = file_path
+            # processor.history_file_path = file_path

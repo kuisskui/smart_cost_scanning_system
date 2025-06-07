@@ -1,6 +1,6 @@
 from src.frame.input_frame import InputFrame
 from tkinter import filedialog
-from src.services.processer_excel import processor
+from src.services.processor_excel import processor
 
 
 class HistoryInputFrame(InputFrame):
@@ -16,4 +16,4 @@ class HistoryInputFrame(InputFrame):
             file_name = file_path.split("/")[-1]
             self.file_label.configure(text=file_name)
             
-            processor.history_file_path = file_path
+            processor.set_history_file_path(file_path)

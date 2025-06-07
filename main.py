@@ -1,4 +1,4 @@
-import customtkinter as ctk, theme
+import customtkinter as ctk
 from src.gui import GraphicUserInterface
 
 def main():

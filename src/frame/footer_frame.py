@@ -12,7 +12,7 @@ class FooterFrame(ctk.CTkFrame):
         # Creator info label
         creator_label = ctk.CTkLabel(
             self,
-            text="Created by: kuisskui | Version 1.0",
+            text="Created by: kuisskui | Version 1.1",
             font=("Arial", 12),
             text_color=("gray60", "gray70")
         )
