@@ -56,6 +56,7 @@ class ProcessorExcel:
             try:
                 order = row_series.to_dict()
                 order_name = order["order_name"].strip()
+                order_unit = order["unit"].strip()
             except:
                 continue
 
@@ -68,11 +69,17 @@ class ProcessorExcel:
                 try:
                     history_order = row_series_history_order.to_dict()
                     history_order_name = history_order["order_name"].strip()
+                    history_order_unit = history_order["unit"].strip()
+
                     if not history_order["start_date"] <= self.__date:
                         continue
 
                     if not (order_name.startswith(history_order_name) or history_order_name.startswith(order_name)):
                         continue
+
+                    if order_unit.stratswith(history_order_unit) or history_order_unit.startswith(order_unit):
+                        self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("po_no") + 1).value = "หน่วยไม่ตรงกัน"
+                        break
 
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("po_no") + 1).value = history_order["po_no"]
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("start_date") + 1).value = history_order["start_date"]
