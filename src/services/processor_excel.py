@@ -84,6 +84,10 @@ class ProcessorExcel:
                     if not history_order["start_date"] <= self.__date:
                         continue
 
+                    if "{" in history_order_name:
+                        history_order_name = re.sub(r"\{.*?\}", "", history_order_name)
+                        history_order_name = re.sub(r"\s+", " ", history_order_name).strip()
+
                     if not order_name == history_order_name:
                         continue
 
