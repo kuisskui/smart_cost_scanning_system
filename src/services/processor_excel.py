@@ -38,7 +38,7 @@ class ProcessorExcel:
             sheet_name="บริษัท, ร้านค้า", 
             usecols=range(0, len(columns_name)))
         self.__history_df.columns = columns_name
-        
+
         self.__orders_df = pd.read_excel(
             self.__orders_file_path,
             sheet_name="วัตถุดิบ",
@@ -47,13 +47,13 @@ class ProcessorExcel:
         self.__orders_df.columns = columns_name
 
         self.__orders_wb = load_workbook(self.__orders_file_path)
-    
+
         self.__total_row = self.__orders_df.shape[0]
         self.__current_row = 0
 
     def run_main_process(self):
         self.run_pre_process()
-            
+
         for index, row_series in self.__orders_df.iterrows():
             self.__current_row += 1
             order = row_series.to_dict()
@@ -67,12 +67,15 @@ class ProcessorExcel:
             if order_name == "" or order_name == None:
                 continue
 
+            if order_unit == "" or order_unit == None:
+                continue
+
             if "{" in order_name:
                 order_name = re.sub(r"\{.*?\}", "", order_name)
                 order_name = re.sub(r"\s+", " ", order_name).strip()
 
-
             for _, row_series_history_order in self.__history_df[::-1].iterrows():
+
                 try:
                     history_order = row_series_history_order.to_dict()
                     history_order_name = history_order["order_name"].strip()
@@ -100,7 +103,7 @@ class ProcessorExcel:
 
                 except:
                     pass
-    
+
     def save(self, save_path):
         self.__orders_wb.save(save_path)
 
