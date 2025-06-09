@@ -1,8 +1,9 @@
 import pandas as pd
+import re
 from openpyxl import load_workbook
+from openpyxl.styles import Font
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import threading
 
 columns_name = [
     "po_no",
@@ -19,6 +20,7 @@ columns_name = [
 ]
 
 class ProcessorExcel:
+
     def __init__(self, history_file_path=None, orders_file_path=None):
         self.__history_file_path = history_file_path
         self.__orders_file_path = orders_file_path
@@ -51,11 +53,13 @@ class ProcessorExcel:
 
     def run_main_process(self):
         self.run_pre_process()
-
+            
         for index, row_series in self.__orders_df.iterrows():
+            self.__current_row += 1
+            order = row_series.to_dict()
+
             try:
-                order = row_series.to_dict()
-                order_name = order["order_name"].strip()
+                order_name  = order["order_name"].strip()
                 order_unit = order["unit"].strip()
             except:
                 continue
@@ -63,7 +67,10 @@ class ProcessorExcel:
             if order_name == "" or order_name == None:
                 continue
 
-            self.__current_row += 1
+            if "{" in order_name:
+                order_name = re.sub(r"\{.*?\}", "", order_name)
+                order_name = re.sub(r"\s+", " ", order_name).strip()
+
 
             for _, row_series_history_order in self.__history_df[::-1].iterrows():
                 try:
@@ -74,11 +81,13 @@ class ProcessorExcel:
                     if not history_order["start_date"] <= self.__date:
                         continue
 
-                    if not (order_name.startswith(history_order_name) or history_order_name.startswith(order_name)):
+                    if not order_name == history_order_name:
                         continue
 
-                    if order_unit.stratswith(history_order_unit) or history_order_unit.startswith(order_unit):
-                        self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("po_no") + 1).value = "หน่วยไม่ตรงกัน"
+                    if not order_unit == history_order_unit:
+                        cell = self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("po_no") + 1)
+                        cell.value = "หน่วยไม่ตรงกัน"
+                        cell.font = Font(color="980000")
                         break
 
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("po_no") + 1).value = history_order["po_no"]
@@ -86,12 +95,12 @@ class ProcessorExcel:
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("end_date") + 1).value = history_order["end_date"]
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("company_name") + 1).value = history_order["company_name"]
                     self.__orders_wb["วัตถุดิบ"].cell(row=index + 2, column=columns_name.index("price") + 1).value = history_order["price"]
-                    
+
                     break
 
                 except:
                     pass
-
+    
     def save(self, save_path):
         self.__orders_wb.save(save_path)
 
