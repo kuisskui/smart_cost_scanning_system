@@ -72,7 +72,8 @@ class ProcessorExcel:
 
             if "{" in order_name:
                 order_name = re.sub(r"\{.*?\}", "", order_name)
-                order_name = re.sub(r"\s+", " ", order_name).strip()
+
+            order_name = re.sub(r"\s+", " ", order_name).strip()
 
             for _, row_series_history_order in self.__history_df[::-1].iterrows():
 
@@ -86,7 +87,8 @@ class ProcessorExcel:
 
                     if "{" in history_order_name:
                         history_order_name = re.sub(r"\{.*?\}", "", history_order_name)
-                        history_order_name = re.sub(r"\s+", " ", history_order_name).strip()
+    
+                    history_order_name = re.sub(r"\s+", " ", history_order_name).strip()
 
                     if not order_name == history_order_name:
                         continue
